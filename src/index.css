@@ -1,0 +1,437 @@
+/* ==========================================================================
+   MARIELA POKKA — ARCTIC HAUTE COUTURE LUXURY DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+  /* Color Palette */
+  --bg-dark: #08080b;
+  --bg-primary: #0d0d12;
+  --bg-secondary: #13131a;
+  --bg-tertiary: #1a1a24;
+  --bg-card: rgba(22, 22, 31, 0.7);
+  --bg-card-hover: rgba(28, 28, 40, 0.85);
+  --bg-overlay: rgba(8, 8, 11, 0.88);
+
+  /* Gold & Metallic Accents */
+  --gold-light: #f6e6be;
+  --gold-primary: #dfc47d;
+  --gold-dark: #b89343;
+  --gold-border: rgba(223, 196, 125, 0.3);
+  --gold-border-subtle: rgba(223, 196, 125, 0.12);
+  --gold-glow: rgba(223, 196, 125, 0.25);
+  --gold-gradient: linear-gradient(135deg, #f6e6be 0%, #dfc47d 45%, #b89343 100%);
+  --gold-gradient-soft: linear-gradient(135deg, rgba(246, 230, 190, 0.15) 0%, rgba(223, 196, 125, 0.05) 100%);
+
+  /* Arctic Colors */
+  --arctic-crimson: #cf3a36;
+  --arctic-crimson-glow: rgba(207, 58, 54, 0.35);
+  --arctic-ice: #a8d5e5;
+  --aurora-cyan: #5ae0d3;
+  --aurora-glow: rgba(90, 224, 211, 0.18);
+
+  /* Text & Foreground */
+  --text-pure: #ffffff;
+  --text-primary: #f5f4f0;
+  --text-secondary: #c2c0bc;
+  --text-muted: #88868c;
+  --text-gold: #dfc47d;
+
+  /* Typography */
+  --font-serif-display: 'Cinzel', Georgia, serif;
+  --font-serif-editorial: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Elevation & Glassmorphism */
+  --glass-bg: rgba(18, 18, 25, 0.65);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.07);
+  --glass-border-gold: 1px solid rgba(223, 196, 125, 0.25);
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --glass-shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(223, 196, 125, 0.15);
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-luxury: 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+
+  /* Layout */
+  --container-max-width: 1400px;
+  --header-height: 90px;
+}
+
+/* Reset & Base Rules */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #252433;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dark);
+}
+
+/* Selection */
+::selection {
+  background: rgba(223, 196, 125, 0.3);
+  color: var(--text-pure);
+}
+
+/* Typography Utility Classes */
+.font-display {
+  font-family: var(--font-serif-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.font-editorial {
+  font-family: var(--font-serif-editorial);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.text-gold-gradient {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.gold-glow {
+  text-shadow: 0 0 20px rgba(223, 196, 125, 0.35);
+}
+
+/* Ambient Northern Lights Canvas / Background */
+.aurora-ambient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.45;
+}
+
+.aurora-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.35;
+  animation: aurora-drift 24s ease-in-out infinite alternate;
+}
+
+.aurora-orb-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(90, 224, 211, 0.25) 0%, rgba(13, 13, 18, 0) 70%);
+  top: -10%;
+  right: -5%;
+  animation-duration: 28s;
+}
+
+.aurora-orb-2 {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(168, 77, 230, 0.18) 0%, rgba(13, 13, 18, 0) 70%);
+  bottom: 20%;
+  left: -10%;
+  animation-duration: 32s;
+  animation-delay: -5s;
+}
+
+.aurora-orb-3 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(207, 58, 54, 0.15) 0%, rgba(13, 13, 18, 0) 70%);
+  top: 40%;
+  right: 15%;
+  animation-duration: 22s;
+  animation-delay: -10s;
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(40px, -50px) scale(1.15);
+  }
+  100% {
+    transform: translate(-30px, 40px) scale(0.95);
+  }
+}
+
+/* Global Container */
+.container {
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+/* Glass Panels */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 4px;
+  transition: all var(--transition-smooth);
+}
+
+.glass-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(223, 196, 125, 0.35);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.glass-card-gold {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: var(--glass-border-gold);
+  border-radius: 4px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(223, 196, 125, 0.08);
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--gold-gradient);
+  color: #0d0d12;
+  font-family: var(--font-serif-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 1.1rem 2.4rem;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-smooth);
+  box-shadow: 0 8px 25px rgba(223, 196, 125, 0.25);
+  text-decoration: none;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: 0.6s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(223, 196, 125, 0.45);
+}
+
+.btn-primary:hover::after {
+  left: 100%;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-serif-display);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 1.1rem 2.2rem;
+  border: 1px solid var(--gold-border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover {
+  border-color: var(--gold-primary);
+  color: var(--gold-light);
+  background: rgba(223, 196, 125, 0.08);
+  box-shadow: 0 0 20px rgba(223, 196, 125, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-text {
+  background: transparent;
+  border: none;
+  color: var(--gold-primary);
+  font-family: var(--font-serif-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.btn-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--gold-gradient);
+  transform: scaleX(0.4);
+  transform-origin: left;
+  transition: transform var(--transition-smooth);
+}
+
+.btn-text:hover {
+  color: var(--gold-light);
+}
+
+.btn-text:hover::after {
+  transform: scaleX(1);
+}
+
+/* Section Header Styling */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-serif-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-primary);
+  background: rgba(223, 196, 125, 0.08);
+  border: 1px solid rgba(223, 196, 125, 0.2);
+  padding: 0.45rem 1.1rem;
+  border-radius: 50px;
+  margin-bottom: 1.25rem;
+}
+
+.section-badge .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-primary);
+  box-shadow: 0 0 10px var(--gold-primary);
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.section-title {
+  font-family: var(--font-serif-display);
+  font-size: clamp(2rem, 3.5vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.18;
+  color: var(--text-pure);
+  margin-bottom: 1.2rem;
+}
+
+.section-subtitle {
+  font-family: var(--font-serif-editorial);
+  font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text-secondary);
+  max-width: 720px;
+  line-height: 1.55;
+  margin-bottom: 3rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Image Shimmer Loading Placeholder */
+.img-shimmer {
+  background: linear-gradient(110deg, #13131c 8%, #1c1c28 18%, #13131c 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}

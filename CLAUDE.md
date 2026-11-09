@@ -80,7 +80,7 @@ Mariela-Pokka/
 - **Dedicated Online Boutique URL**: `https://marielapokka.com/shop`
 - **Medusa Admin Panel URL**: `https://marielapokka.com/app`
   - **Admin Email**: `admin@marielapokka.com`
-  - **Admin Password**: `supersecretadmin`
+  - **Admin Password**: *(see private `.env` / shared credentials)*
 - **Medusa Publishable API Key (`x-publishable-api-key`)**:
   - `pk_6be3221614edad88fef2bcafcf33e7314e29efa3f3c20519c0db55c240c437f4`
 - **Default Europe (`EUR`) Region ID**:

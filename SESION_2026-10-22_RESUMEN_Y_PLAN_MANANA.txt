@@ -48,7 +48,7 @@ A) Backend (Medusa.js v2):
    - Panel de Administración: http://localhost:9000/app
    - Credenciales Admin:
        Usuario:  admin@marielapokka.com
-       Password: supersecretadmin
+       Password: [REDACTED_FOR_PUBLIC_REPO]
    - Publishable API Key:
        pk_6be3221614edad88fef2bcafcf33e7314e29efa3f3c20519c0db55c240c437f4
    - Endpoint estático de imágenes:

@@ -40,6 +40,18 @@ export default function ProductModal({
     setTimeout(() => setAddedNotice(false), 2600);
   };
 
+  // Check if selected variant has immediate stock in Medusa
+  const matchingVariant = (product.rawVariants || []).find((v) => {
+    const titleLower = (v.title || '').toLowerCase();
+    const sLower = (selectedSize || '').toLowerCase();
+    const cLower = (selectedColor || '').toLowerCase();
+    return titleLower.includes(sLower) && (!cLower || titleLower.includes(cLower));
+  });
+  const selectedVariantStock =
+    typeof matchingVariant?.inventory_quantity === 'number'
+      ? matchingVariant.inventory_quantity
+      : product.totalStock || 0;
+
   return (
     <div style={{
       position: 'fixed',
@@ -172,18 +184,21 @@ export default function ProductModal({
         }}>
           <div>
             {/* Badges */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.8rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
               <span style={{
                 fontFamily: 'var(--font-serif-display)',
                 fontSize: '0.65rem',
                 letterSpacing: '0.2em',
-                color: 'var(--gold-primary)',
+                color: selectedVariantStock > 0 ? '#34d399' : 'var(--gold-primary)',
                 textTransform: 'uppercase',
-                background: 'rgba(223, 196, 125, 0.1)',
+                background: selectedVariantStock > 0 ? 'rgba(16, 185, 129, 0.12)' : 'rgba(223, 196, 125, 0.1)',
+                border: selectedVariantStock > 0 ? '1px solid rgba(16, 185, 129, 0.35)' : 'none',
                 padding: '0.25rem 0.65rem',
                 borderRadius: '2px'
               }}>
-                {product.badge || 'Haute Couture'}
+                {selectedVariantStock > 0
+                  ? `In Stock • Ready to Ship (${selectedVariantStock})`
+                  : product.badge || 'Haute Couture'}
               </span>
               <span style={{
                 fontSize: '0.7rem',

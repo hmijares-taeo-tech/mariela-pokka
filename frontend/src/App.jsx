@@ -184,6 +184,7 @@ export default function App() {
         currency={currency}
         onRemoveItem={handleRemoveFromCart}
         onClearCart={handleClearCart}
+        onOpenShop={openShop}
       />
 
       {/* Luxury Toast Notification */}

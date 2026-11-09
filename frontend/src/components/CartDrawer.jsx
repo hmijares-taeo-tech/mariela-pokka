@@ -9,11 +9,13 @@ export default function CartDrawer({
   currency,
   onUpdateQuantity,
   onRemoveItem,
-  onClearCart
+  onClearCart,
+  onOpenShop
 }) {
   if (!isOpen) return null;
 
   const [checkoutStep, setCheckoutStep] = useState('review'); // 'review' | 'concierge' | 'confirmed'
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -137,11 +139,14 @@ export default function CartDrawer({
               </p>
 
               <button
-                onClick={onClose}
+                onClick={() => {
+                  onClose();
+                  onOpenShop && onOpenShop('all');
+                }}
                 className="btn-primary"
                 style={{ fontSize: '0.75rem' }}
               >
-                Explore Creations
+                Enter Online Boutique
               </button>
             </div>
           ) : checkoutStep === 'confirmed' ? (
@@ -319,39 +324,41 @@ export default function CartDrawer({
                 {/* Payment Option Selector */}
                 <div>
                   <label style={{ display: 'block', fontSize: '0.72rem', fontFamily: 'var(--font-serif-display)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-secondary)', marginBottom: '0.6rem' }}>
-                    Payment Processing Method
+                    Preferred Payment Method
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                    <div style={{
-                      padding: '0.75rem',
-                      borderRadius: '3px',
-                      border: '1px solid rgba(223, 196, 125, 0.4)',
-                      background: 'rgba(223, 196, 125, 0.08)',
-                      cursor: 'pointer'
-                    }}>
+                    <div
+                      onClick={() => setPaymentMethod('card')}
+                      style={{
+                        padding: '0.75rem',
+                        borderRadius: '3px',
+                        border: paymentMethod === 'card' ? '1px solid rgba(223, 196, 125, 0.55)' : '1px solid rgba(255, 255, 255, 0.1)',
+                        background: paymentMethod === 'card' ? 'rgba(223, 196, 125, 0.1)' : 'rgba(255, 255, 255, 0.02)',
+                        cursor: 'pointer'
+                      }}
+                    >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gold-light)' }}>Stripe / Card</span>
-                        <span style={{ fontSize: '9px', background: '#0284c7', color: '#fff', padding: '1px 5px', borderRadius: '3px' }}>Backend Ready</span>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: paymentMethod === 'card' ? 'var(--gold-light)' : '#fff' }}>Credit / Debit Card</span>
                       </div>
-                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Visa, MC, Amex, Apple Pay</span>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Visa, Mastercard, Amex, Apple Pay</span>
                     </div>
 
-                    <div style={{
-                      padding: '0.75rem',
-                      borderRadius: '3px',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      cursor: 'pointer'
-                    }}>
+                    <div
+                      onClick={() => setPaymentMethod('wire')}
+                      style={{
+                        padding: '0.75rem',
+                        borderRadius: '3px',
+                        border: paymentMethod === 'wire' ? '1px solid rgba(223, 196, 125, 0.55)' : '1px solid rgba(255, 255, 255, 0.1)',
+                        background: paymentMethod === 'wire' ? 'rgba(223, 196, 125, 0.1)' : 'rgba(255, 255, 255, 0.02)',
+                        cursor: 'pointer'
+                      }}
+                    >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#fff' }}>Atelier Wire</span>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: paymentMethod === 'wire' ? 'var(--gold-light)' : '#fff' }}>Private Wire Transfer</span>
                       </div>
-                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Direct Concierge Invoice</span>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Direct Atelier Invoice (EUR/USD)</span>
                     </div>
                   </div>
-                  <p style={{ fontSize: '0.7rem', color: '#38bdf8', marginTop: '6px' }}>
-                    ⚡ Medusa + Stripe backend hook is active. Add client API key in .env to accept real cards.
-                  </p>
                 </div>
               </div>
 

@@ -1,0 +1,140 @@
+================================================================================
+          OPERACIÓN RESCATE MARIELA POKKA (SHOPIFY -> MEDUSA v2 + VITE)
+                     RESUMEN DE SESIÓN Y HOJA DE RUTA PARA MAÑANA
+                               Fecha: 22 de Octubre de 2026
+================================================================================
+
+--------------------------------------------------------------------------------
+1. RESUMEN EJECUTIVO DE LO REALIZADO HOY
+--------------------------------------------------------------------------------
+- Objetivo Principal: Rescate urgente de la tienda de lujo 'marielapokka.com'
+  antes del vencimiento de la cuenta en Shopify a medianoche.
+- Resultado: 100% de los datos, variantes, precios, inventario y fotografías
+  fueron extraídos, normalizados, migrados a base de datos PostgreSQL local y
+  desvinculados totalmente de la infraestructura y CDN de Shopify.
+- La cuenta de Shopify quedó lista para cancelación segura por parte del usuario.
+- Dominio 'marielapokka.com': Verificado en WHOIS; está registrado en Namecheap
+  (servidores dns-parking), por lo que NO se pierde al cerrar Shopify.
+
+--------------------------------------------------------------------------------
+2. RESGUARDO DE DATOS LOCALES (ESTADO DE ARCHIVOS)
+--------------------------------------------------------------------------------
+A) Fotografías de Productos (100% Descargadas localmente):
+   - Ubicación en disco: /home/hm1jar3s/Desarrollo/Mariela-Pokka/data/images/
+   - Total archivos: 749 fotos en alta resolución (250 MB).
+   - Verificación en Base de Datos: 749/749 imágenes coincidentes (0 faltantes).
+   - Desvinculación de Shopify CDN: Total. Ninguna imagen depende de Shopify.
+
+B) Catálogo de Productos y Variantes:
+   - Archivo CSV original de Shopify: data/products_export.csv
+   - Archivo JSON normalizado: data/catalog_normalized.json
+   - Total productos importados: 137 productos de lujo.
+   - Total variantes: 892 variantes (tallas, colores, SKUs únicos).
+   - Inventario sincronizado: 311 variantes con existencias positivas exactas
+     migradas desde el inventario de Shopify.
+
+C) Base de Datos PostgreSQL:
+   - Contenedor Docker: 'mariela-postgres' (PostgreSQL 16 en puerto 5432).
+   - Base de datos: 'medusa-mariela'
+   - Backup SQL completo generado hoy: data/medusa_backup.sql (2.6 MB)
+   - Backup comprimido PostgreSQL: data/medusa_mariela.dump (827 KB)
+   Ambos respaldos contienen el catálogo limpio, usuarios admin y niveles de stock.
+
+--------------------------------------------------------------------------------
+3. ARQUITECTURA TÉCNICA IMPLEMENTADA
+--------------------------------------------------------------------------------
+A) Backend (Medusa.js v2):
+   - Directorio: /home/hm1jar3s/Desarrollo/Mariela-Pokka/backend/apps/backend
+   - Panel de Administración: http://localhost:9000/app
+   - Credenciales Admin:
+       Usuario:  admin@marielapokka.com
+       Password: supersecretadmin
+   - Publishable API Key:
+       pk_6be3221614edad88fef2bcafcf33e7314e29efa3f3c20519c0db55c240c437f4
+   - Endpoint estático de imágenes:
+       src/api/catalog-images/[filename]/route.ts
+       (Sirve las 749 imágenes locales con cabeceras HTTP 200, CORS y caché)
+   - Pasarela Stripe:
+       Paquete @medusajs/payment-stripe preinstalado y configurado en
+       medusa-config.ts y .env. Se activa automáticamente al colocar las API keys.
+
+B) Frontend (React + Vite + Vanilla CSS):
+   - Directorio: /home/hm1jar3s/Desarrollo/Mariela-Pokka/frontend
+   - Enlace a catálogo: Sincronizado dinámicamente con Medusa Store API.
+   - Colecciones mapeadas (6 oficiales):
+       1. Trenches & Outerwear
+       2. Tailored Jackets & Suits
+       3. Dresses & Skirts
+       4. Pants, Shorts & Bermudas
+       5. Blouses, Shirts & Tops
+       6. Accessories & Fine Leather Goods
+   - Modificación solicitada: Eliminación total de referencias, modales y botones
+     de "Bespoke Atelier Services" (el cliente no ofrece sastrería a medida).
+
+C) Despliegue Producción VPS (Preparado):
+   - Directorio: /home/hm1jar3s/Desarrollo/Mariela-Pokka/deploy/
+   - docker-compose.yml: PostgreSQL 16 + Medusa v2 Backend + Nginx Reverse Proxy.
+   - nginx.conf: Reverse proxy con SSL Let's Encrypt preconfigurado.
+   - Guía paso a paso: VPS_DEPLOYMENT_GUIDE.md
+
+--------------------------------------------------------------------------------
+4. COMANDOS PARA INICIAR LOS SERVIDORES CUANDO RETOMEMOS
+--------------------------------------------------------------------------------
+Si deseas volver a encender el entorno de desarrollo local:
+
+1. Iniciar PostgreSQL (si el contenedor está detenido):
+   docker start mariela-postgres
+
+2. Iniciar Backend (Medusa v2):
+   cd /home/hm1jar3s/Desarrollo/Mariela-Pokka/backend/apps/backend
+   npx medusa develop
+   (Disponible en: http://localhost:9000/app)
+
+3. Iniciar Frontend (Storefront Vite):
+   cd /home/hm1jar3s/Desarrollo/Mariela-Pokka/frontend
+   npm run dev -- --port 5173 --host
+   (Disponible en: http://localhost:5173)
+
+--------------------------------------------------------------------------------
+5. HOJA DE RUTA PARA MAÑANA (PASO A PASO)
+--------------------------------------------------------------------------------
+FASE 1: VERIFICACIÓN INICIAL Y PREPARATIVOS
+  [ ] 1. Encender el entorno local y confirmar que todo abre en orden.
+  [ ] 2. Solicitar al cliente o disponer de las credenciales de Stripe:
+         - Stripe Publishable Key (pk_live_...)
+         - Stripe Secret Key (sk_live_...)
+         - Stripe Webhook Secret (whsec_...)
+
+FASE 2: CONTRATACIÓN / ACCESO AL VPS EN OVHCLOUD
+  [ ] 3. Conexión SSH al VPS de OVHcloud (Ubuntu 22.04 / 24.04).
+  [ ] 4. Instalación de Docker y Docker Compose en el VPS:
+         curl -fsSL https://get.docker.com | sh
+  [ ] 5. Transferir archivos al VPS (proyecto, base de datos y data/images):
+         rsync -avz --exclude 'node_modules' /home/hm1jar3s/Desarrollo/Mariela-Pokka/ \
+           root@<IP_VPS>:/opt/mariela-pokka/
+
+FASE 3: CONFIGURACIÓN DE DOMINIO Y DNS EN NAMECHEAP
+  [ ] 6. En el panel de Namecheap para marielapokka.com:
+         - Crear registro tipo A: @ -> <IP_VPS>
+         - Crear registro tipo A: www -> <IP_VPS>
+         - Crear registro tipo A: api -> <IP_VPS> (o backend)
+         - TTL: 1 min / Automático.
+
+FASE 4: PUESTA EN MARCHA EN PRODUCCIÓN CON DOCKER
+  [ ] 7. Restaurar base de datos en PostgreSQL de producción:
+         docker compose -f deploy/docker-compose.yml up -d postgres
+         cat data/medusa_backup.sql | docker exec -i mariela-postgres-prod psql -U postgres -d medusa_prod
+  [ ] 8. Generar certificados SSL con Certbot (Let's Encrypt gratuito):
+         certbot certonly --standalone -d marielapokka.com -d www.marielapokka.com -d api.marielapokka.com
+  [ ] 9. Levantar todo el stack en producción:
+         docker compose -f deploy/docker-compose.yml up -d --build
+
+FASE 5: PRUEBAS DE HUMO (SMOKE TEST)
+  [ ] 10. Probar navegación en https://marielapokka.com
+  [ ] 11. Probar carga de imágenes desde el backend de producción.
+  [ ] 12. Probar añadir un producto al carrito y flujo de checkout con Stripe.
+  [ ] 13. Entregar credenciales del panel de Medusa al cliente con su dominio definitivo.
+
+================================================================================
+Fin del informe. Todo el trabajo de hoy está a salvo y versionado.
+================================================================================

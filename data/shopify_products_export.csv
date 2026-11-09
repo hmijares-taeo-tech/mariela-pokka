@@ -1,0 +1,9 @@
+Handle,Title,Body (HTML)' in last_user_input:
+    csv_start = last_user_input.find('Handle,Title,Body (HTML)')
+    csv_content = last_user_input[csv_start:]
+    with open('/home/hm1jar3s/Desarrollo/Mariela-Pokka/data/shopify_products_export.csv', 'w', encoding='utf-8') as out:
+        out.write(csv_content)
+    print(f'CSV saved successfully! Bytes: {len(csv_content)}')
+else:
+    print('Header not found in last user input')
+"

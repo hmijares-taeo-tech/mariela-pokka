@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Shopify Data Rescuer - Mariela Pokka",
+  "version": "1.0.0",
+  "description": "Extractor de productos, variantes e imagenes de Shopify Admin antes del cierre de cuenta.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://admin.shopify.com/*",
+    "*://*.myshopify.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Shopify Data Rescuer"
+  }
+}

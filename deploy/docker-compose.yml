@@ -1,0 +1,66 @@
+services:
+  # 1. Base de Datos PostgreSQL 16 (Red interna privada)
+  postgres:
+    image: postgres:16-alpine
+    container_name: mariela-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-SuperSecurePass2026!}
+      POSTGRES_DB: ${POSTGRES_DB:-medusa-mariela}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-medusa-mariela}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Backend Medusa.js v2
+  backend:
+    build:
+      context: ../backend/apps/backend
+      dockerfile: Dockerfile
+    container_name: mariela-backend-prod
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-SuperSecurePass2026!}@postgres:5432/${POSTGRES_DB:-medusa-mariela}
+      STORE_CORS: https://marielapokka.com,https://www.marielapokka.com
+      ADMIN_CORS: https://marielapokka.com,https://www.marielapokka.com
+      AUTH_CORS: https://marielapokka.com,https://www.marielapokka.com
+      JWT_SECRET: ${JWT_SECRET:-MarielaPokkaSecretJWT2026!}
+      COOKIE_SECRET: ${COOKIE_SECRET:-MarielaPokkaSecretCookie2026!}
+      STRIPE_API_KEY: ${STRIPE_API_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      PORT: 9000
+    volumes:
+      - ../data/images:/data/images:ro
+    expose:
+      - "9000"
+
+  # 3. Caddy 2 Reverse Proxy + Servidor Web Estático + Auto-HTTPS
+  caddy:
+    image: caddy:2-alpine
+    container_name: mariela-caddy-prod
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../frontend/dist:/srv/frontend:ro
+      - ../data/images:/srv/catalog-images:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:

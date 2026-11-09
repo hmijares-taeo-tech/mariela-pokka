@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Philosophy from './components/Philosophy';
 import Collections from './components/Collections';
+import ShopPage from './components/ShopPage';
 import ProductModal from './components/ProductModal';
 import DesignerStory from './components/DesignerStory';
 import Stories from './components/Stories';
 import Gallery from './components/Gallery';
 import CartDrawer from './components/CartDrawer';
 import Footer from './components/Footer';
-import { Check, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export default function App() {
   const [currency, setCurrency] = useState('EUR');
@@ -17,6 +18,46 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  const [activeView, setActiveView] = useState(() =>
+    window.location.pathname.startsWith('/shop') ? 'shop' : 'home'
+  );
+  const [shopCategory, setShopCategory] = useState('all');
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (window.location.pathname.startsWith('/shop')) {
+        setActiveView('shop');
+      } else {
+        setActiveView('home');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const openShop = (category = 'all') => {
+    setShopCategory(category || 'all');
+    setActiveView('shop');
+    if (!window.location.pathname.startsWith('/shop')) {
+      window.history.pushState({}, '', '/shop');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goHome = (targetHash = null) => {
+    setActiveView('home');
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', targetHash ? `/${targetHash}` : '/');
+    }
+    if (targetHash) {
+      setTimeout(() => {
+        const el = document.querySelector(targetHash);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 60);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -54,7 +95,11 @@ export default function App() {
   };
 
   const scrollToCollections = () => {
-    document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
+    if (activeView !== 'home') {
+      goHome('#collections');
+    } else {
+      document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -73,37 +118,54 @@ export default function App() {
         cartItems={cartItems}
         onOpenCart={() => setIsCartOpen(true)}
         onExploreCollections={scrollToCollections}
+        activeView={activeView}
+        onOpenShop={openShop}
+        onGoHome={goHome}
       />
 
       {/* Main Content Sections */}
-      <main>
-        {/* Cinematic Hero */}
-        <Hero
-          onExploreCollections={scrollToCollections}
-        />
+      {activeView === 'shop' ? (
+        <main>
+          <ShopPage
+            currency={currency}
+            initialCategory={shopCategory}
+            onSelectProduct={(p) => setSelectedProduct(p)}
+            onAddToCart={handleAddToCart}
+            onBackToHome={() => goHome()}
+          />
+        </main>
+      ) : (
+        <main>
+          {/* Cinematic Hero */}
+          <Hero
+            onExploreCollections={scrollToCollections}
+            onOpenShop={openShop}
+          />
 
-        {/* Silk of the North & Craftsmanship Principles */}
-        <Philosophy />
+          {/* Silk of the North & Craftsmanship Principles */}
+          <Philosophy />
 
-        {/* Collections Catalog & Lookbook */}
-        <Collections
-          currency={currency}
-          onSelectProduct={(p) => setSelectedProduct(p)}
-          onAddToCart={handleAddToCart}
-        />
+          {/* Curated Collections Showcase + Enter Boutique CTA */}
+          <Collections
+            currency={currency}
+            onSelectProduct={(p) => setSelectedProduct(p)}
+            onAddToCart={handleAddToCart}
+            onOpenShop={openShop}
+          />
 
-        {/* Designer Story & Caracas-to-Lapland Odyssey */}
-        <DesignerStory />
+          {/* Designer Story & Caracas-to-Lapland Odyssey */}
+          <DesignerStory />
 
-        {/* High-Fashion Editorial Stories & Monaco Press */}
-        <Stories />
+          {/* High-Fashion Editorial Stories & Monaco Press */}
+          <Stories />
 
-        {/* Runway & Atelier Lookbook Photo Gallery */}
-        <Gallery />
-      </main>
+          {/* Runway & Atelier Lookbook Photo Gallery */}
+          <Gallery />
+        </main>
+      )}
 
       {/* Footer & Rovaniemi Head Office */}
-      <Footer onExploreCollections={scrollToCollections} />
+      <Footer onExploreCollections={() => openShop('all')} />
 
       {/* Product Detail Modal */}
       <ProductModal

@@ -17,7 +17,8 @@ const CATEGORIES = [
 export default function Collections({
   currency,
   onSelectProduct,
-  onAddToCart
+  onAddToCart,
+  onOpenShop
 }) {
   const [activeCategory, setActiveCategory] = useState('all');
   const [products, setProducts] = useState(FALLBACK_PRODUCTS);
@@ -44,6 +45,8 @@ export default function Collections({
   const filteredProducts = activeCategory === 'all'
     ? products
     : products.filter((p) => p.category === activeCategory);
+
+  const curatedPreview = filteredProducts.slice(0, 6);
 
   return (
     <section id="collections" style={{
@@ -120,14 +123,14 @@ export default function Collections({
           ))}
         </div>
 
-        {/* Product Cards Grid */}
+        {/* Product Cards Grid (Curated Home Showcase) */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))',
           gap: '2.5rem',
-          marginBottom: '5rem'
+          marginBottom: '3rem'
         }}>
-          {filteredProducts.map((product) => (
+          {curatedPreview.map((product) => (
             <div
               key={product.id}
               className="glass-card"
@@ -273,6 +276,39 @@ export default function Collections({
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Enter Full Online Boutique CTA */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '1rem',
+          marginBottom: '5rem',
+          textAlign: 'center'
+        }}>
+          <p style={{
+            fontFamily: 'var(--font-serif-editorial)',
+            fontSize: '1.05rem',
+            fontStyle: 'italic',
+            color: 'var(--text-secondary)'
+          }}>
+            Showing {curatedPreview.length} curated highlights of {filteredProducts.length} creations in this selection.
+          </p>
+          <button
+            onClick={() => onOpenShop && onOpenShop(activeCategory)}
+            className="btn-primary"
+            style={{
+              padding: '1rem 2.6rem',
+              fontSize: '0.82rem',
+              letterSpacing: '0.18em'
+            }}
+          >
+            <ShoppingBag size={16} />
+            <span>Enter Full Online Boutique ({products.length} Creations & Filters)</span>
+            <ArrowRight size={16} />
+          </button>
         </div>
 
         {/* Concierge Bespoke Callout Banner */}

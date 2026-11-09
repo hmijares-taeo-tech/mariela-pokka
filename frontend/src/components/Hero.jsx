@@ -30,7 +30,7 @@ export const HERO_METRICS = [
   { value: 'Monaco Catwalk', label: 'Haute Couture Debut', detail: 'Global fashion acclaim' }
 ];
 
-export default function Hero({ onExploreCollections }) {
+export default function Hero({ onExploreCollections, onOpenShop }) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -168,21 +168,21 @@ export default function Hero({ onExploreCollections }) {
           marginBottom: '3rem'
         }}>
           <button
-            onClick={onExploreCollections}
+            onClick={() => (onOpenShop ? onOpenShop('all') : onExploreCollections())}
             className="btn-primary"
             style={{ fontSize: '0.82rem' }}
           >
-            <span>Explore Creations</span>
+            <span>Enter Online Boutique</span>
             <ChevronRight size={16} />
           </button>
 
           <button
-            onClick={() => document.getElementById('story')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={onExploreCollections}
             className="btn-secondary"
             style={{ fontSize: '0.82rem' }}
           >
             <Sparkles size={15} color="var(--gold-primary)" />
-            <span>The House Heritage</span>
+            <span>Explore Lookbook</span>
           </button>
         </div>
 

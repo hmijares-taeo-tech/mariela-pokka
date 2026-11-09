@@ -8,7 +8,10 @@ export default function Navbar({
   setCurrency,
   cartItems,
   onOpenCart,
-  onExploreCollections
+  onExploreCollections,
+  activeView = 'home',
+  onOpenShop,
+  onGoHome
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,6 +32,7 @@ export default function Navbar({
   };
 
   const navLinks = [
+    { label: 'Boutique', href: '/shop', isShop: true },
     { label: 'The House', href: '#story' },
     { label: 'Silk of the North', href: '#silk' },
     { label: 'Collections', href: '#collections' },
@@ -36,6 +40,20 @@ export default function Navbar({
     { label: 'Gallery', href: '#gallery' },
     { label: 'Contact', href: '#contact' },
   ];
+
+  const handleNavClick = (e, link) => {
+    e.preventDefault();
+    if (link.isShop) {
+      onOpenShop && onOpenShop('all');
+      return;
+    }
+    if (activeView !== 'home' && onGoHome) {
+      onGoHome(link.href);
+    } else {
+      const el = document.querySelector(link.href);
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const totalCartCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
@@ -71,7 +89,11 @@ export default function Navbar({
         }}>
           {/* Brand Logo & Emblem */}
           <a
-            href="#"
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              onGoHome && onGoHome();
+            }}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -126,30 +148,36 @@ export default function Navbar({
           {/* Desktop Navigation Links */}
           <nav style={{
             display: 'none',
-            gap: '2rem',
+            gap: '1.75rem',
             alignItems: 'center'
           }} className="desktop-nav">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                style={{
-                  fontFamily: 'var(--font-serif-display)',
-                  fontSize: '0.75rem',
-                  letterSpacing: '0.16em',
-                  color: 'var(--text-secondary)',
-                  textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  transition: 'color 0.2s ease',
-                  position: 'relative',
-                  padding: '0.5rem 0'
-                }}
-                onMouseEnter={(e) => (e.target.style.color = 'var(--gold-primary)')}
-                onMouseLeave={(e) => (e.target.style.color = 'var(--text-secondary)')}
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isBoutiqueActive = link.isShop && activeView === 'shop';
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link)}
+                  style={{
+                    fontFamily: 'var(--font-serif-display)',
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.16em',
+                    color: isBoutiqueActive || link.isShop ? 'var(--gold-primary)' : 'var(--text-secondary)',
+                    fontWeight: link.isShop ? 600 : 400,
+                    textTransform: 'uppercase',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s ease',
+                    position: 'relative',
+                    padding: '0.5rem 0',
+                    borderBottom: isBoutiqueActive ? '1px solid var(--gold-primary)' : 'none'
+                  }}
+                  onMouseEnter={(e) => (e.target.style.color = 'var(--gold-primary)')}
+                  onMouseLeave={(e) => (e.target.style.color = isBoutiqueActive || link.isShop ? 'var(--gold-primary)' : 'var(--text-secondary)')}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Right Actions: Currency, Audio, Cart, VIP Button */}
@@ -295,9 +323,9 @@ export default function Navbar({
               )}
             </button>
 
-            {/* Collections CTA */}
+            {/* Online Boutique CTA */}
             <button
-              onClick={onExploreCollections}
+              onClick={() => onOpenShop && onOpenShop('all')}
               style={{
                 display: 'none',
                 alignItems: 'center',
@@ -318,7 +346,7 @@ export default function Navbar({
               className="vip-cta-btn"
             >
               <Sparkles size={13} />
-              <span>Explore Creations</span>
+              <span>Online Boutique</span>
             </button>
 
             {/* Mobile Hamburger Menu Toggle */}
@@ -365,12 +393,15 @@ export default function Navbar({
               <a
                 key={link.label}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  handleNavClick(e, link);
+                }}
                 style={{
                   fontFamily: 'var(--font-serif-display)',
                   fontSize: '1.15rem',
                   letterSpacing: '0.2em',
-                  color: 'var(--text-primary)',
+                  color: link.isShop ? 'var(--gold-primary)' : 'var(--text-primary)',
                   textTransform: 'uppercase',
                   textDecoration: 'none'
                 }}
@@ -382,7 +413,7 @@ export default function Navbar({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onExploreCollections();
+                onOpenShop && onOpenShop('all');
               }}
               style={{
                 marginTop: '1rem',
@@ -401,7 +432,7 @@ export default function Navbar({
                 maxWidth: '280px'
               }}
             >
-              Shop Collections
+              Enter Online Boutique
             </button>
           </div>
         )}

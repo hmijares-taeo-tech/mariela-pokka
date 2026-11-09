@@ -122,3 +122,4 @@ cd /home/hm1jar3s/Desarrollo/Mariela-Pokka/backend/apps/backend && npx medusa de
 # 3. Start Vite frontend (http://localhost:5173)
 cd /home/hm1jar3s/Desarrollo/Mariela-Pokka/frontend && npm run dev -- --port 5173 --host
 ```
+
